@@ -1,11 +1,20 @@
 'use client';
 import React, { useState } from 'react';
 import styles from './game.module.css';
+import { useBank } from '@/context/BankContext'; 
+
 
 export default function GamePage() {
   const [boxes, setBoxes] = useState<string[]>(Array(16).fill(''));
+  const { balance, decreaseBalance, increaseBalance } = useBank();
 
   const growPlant = (index: number) => {
+    if (balance == 0 || balance < 10) {
+      return;
+    }
+
+    decreaseBalance(10);
+
     setBoxes(prev => {
       const updated = [...prev];
       updated[index] = 'tohum';
@@ -35,8 +44,7 @@ export default function GamePage() {
     setTimeout(() => {
       setBoxes(prev => {
         const updated = [...prev];
-        if (updated[index] === 'bitki') 
-        {
+        if (updated[index] === 'bitki') {
           updated[index] = 'çiçek';
         }
         return updated;
@@ -46,8 +54,7 @@ export default function GamePage() {
     setTimeout(() => {
       setBoxes(prev => {
         const updated = [...prev];
-        if (updated[index] === 'çiçek') 
-        {
+        if (updated[index] === 'çiçek') {
           updated[index] = 'kurumuş çiçek';
         }
         return updated;
@@ -59,6 +66,9 @@ export default function GamePage() {
     if (boxes[index] === '') {
       growPlant(index);
     } else {
+      if (boxes[index] === 'çiçek') {
+        increaseBalance(20);
+      }
       setBoxes(prev => {
         const updated = [...prev];
         updated[index] = '';
@@ -68,16 +78,19 @@ export default function GamePage() {
   };
 
   return (
-    <div className={styles.container}>
-      {boxes.map((content, i) => (
-        <button
-          key={i}
-          className={styles.box}
-          onClick={() => handleClick(i)}
-        >
-          {content}
-        </button>
-      ))}
+    <div>
+      <div>Bankadaki Para: {balance}</div>
+      <div className={styles.container}>
+        {boxes.map((content, i) => (
+          <button
+            key={i}
+            className={styles.box}
+            onClick={() => handleClick(i)}
+          >
+            {content}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
