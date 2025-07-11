@@ -19,7 +19,7 @@ export default function SignUpPage() {
 
   return (
     <div>
-      <h2>Sign Up</h2>
+      <h2>Üye Ol</h2>
       <input
         type="text"
         placeholder="Kullanıcı adı"
